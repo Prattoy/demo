@@ -7,8 +7,12 @@
 <body>
 
 <h2>User Registration</h2>
+<!-- Display the message if it exists -->
+<c:if test="${not empty message}">
+    <div style="color: green; font-weight: bold;">${message}</div>
+</c:if>
 
-<form action="/register" method="post">
+<form action="/user/register" method="post">
     <label for="name">Name:</label>
     <input type="text" id="name" name="name" required><br>
 
