@@ -1,1 +1,1 @@
-A simple CRUD project using Spring Boot
+A simple CRUD project using Spring Boot with Oracle database
