@@ -1,7 +1,6 @@
 package com.example.demo.model;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name = "TEST_USER", schema = "BRTA_ARCH")
@@ -25,15 +24,13 @@ public class TestUser {
     private String status;
 
     @Column(name = "INSERT_DATE")
-    @Temporal(TemporalType.DATE)
-    private Date insertDate;
+    private String insertDate;
 
     @Column(name = "INSERT_BY")
     private Long insertBy;
 
     @Column(name = "UPDATE_DATE")
-    @Temporal(TemporalType.DATE)
-    private Date updateDate;
+    private String updateDate;
 
     @Column(name = "UPDATE_BY")
     private Long updateBy;
@@ -89,11 +86,11 @@ public class TestUser {
         this.status = status;
     }
 
-    public Date getInsertDate() {
+    public String getInsertDate() {
         return insertDate;
     }
 
-    public void setInsertDate(Date insertDate) {
+    public void setInsertDate(String insertDate) {
         this.insertDate = insertDate;
     }
 
@@ -105,11 +102,11 @@ public class TestUser {
         this.insertBy = insertBy;
     }
 
-    public Date getUpdateDate() {
+    public String getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
+    public void setUpdateDate(String updateDate) {
         this.updateDate = updateDate;
     }
 
