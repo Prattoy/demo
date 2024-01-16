@@ -1,5 +1,8 @@
-<!-- registration.jsp -->
 <!DOCTYPE html>
+<!-- registration.jsp -->
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%--<%@ page session="false" %>--%>
+
 <html lang="en">
 <head>
     <title>User Registration</title>
@@ -13,7 +16,7 @@
     <h2 class="text-center">User Registration</h2>
 
     <!-- Display the message if it exists -->
-    <c:if test="${not empty message}">
+    <c:if test="${not empty message}}">
         <div class="alert alert-success show mt-3 message-div" role="alert">
                 ${message}
             <button type="button" class="btn btn-danger btn-sm float-end close-button">
@@ -96,15 +99,38 @@
 
                     // Check if the users array is not empty
                     if (users && users.length > 0) {
-                        var userList = $("<ul>");
+                        // Create a table
+                        var table = $("<table class='table'>");
 
-                        // Iterate over each user and append to the list
+                        // Add table header
+                        var header = $("<thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>");
+                        table.append(header);
+
+                        // Create a table body
+                        var tbody = $("<tbody>");
+
+                        // Iterate over each user and append to the table
                         $.each(users, function (index, user) {
-                            var listItem = $("<li>").text(user.userName);
-                            userList.append(listItem);
+                            var row = $("<tr>");
+                            row.append("<td>" + user.userId + "</td>");
+                            row.append("<td>" + user.userName + "</td>");
+                            row.append("<td>" + user.email + "</td>");
+                            row.append("<td>" + user.phoneNo + "</td>");
+                            row.append("<td>" + user.status + "</td>");
+
+                            // Add edit and delete buttons
+                            var actions = $("<td><button class='btn btn-primary btn-sm' onclick='editUser(" + user.userId + ")'>Edit</button> " +
+                                "<button class='btn btn-danger btn-sm' onclick='deleteUser(" + user.userId + ")'>Delete</button></td>");
+                            row.append(actions);
+
+                            tbody.append(row);
                         });
 
-                        userListContainer.append(userList);
+                        // Append table body to the table
+                        table.append(tbody);
+
+                        // Append the table to the container
+                        userListContainer.append(table);
                     } else {
                         userListContainer.text("No users found.");
                     }
