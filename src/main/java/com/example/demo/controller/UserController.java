@@ -12,7 +12,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/user")
@@ -59,7 +62,17 @@ public class UserController {
 //        Long userId = (Long) request.getAttribute("user_id");
 //        Users user = (Users) request.getAttribute("user");
 //        Long BranchId = user.getBranch_id();
-        TestUser oTestUser = testUserService.createTestUser(testUser);
+
+        TestUser oTestUser;
+
+        // Update
+        if(testUser.getUserId() != null)
+        {
+            oTestUser = testUserService.updateTestUser(testUser);
+        } else { // Insert
+            oTestUser = testUserService.createTestUser(testUser);
+        }
+
 //        redirectAttributes.addFlashAttribute("documentLot", oDocumentLOT);
         redirectAttributes.addFlashAttribute("message", oTestUser.getMessage());
         redirectAttributes.addFlashAttribute("messageCode", oTestUser.getMessageCode());
@@ -71,5 +84,22 @@ public class UserController {
     @GetMapping("/list")
     public List<TestUser> getTestUsers() {
         return testUserService.getAllTestUsers();
+    }
+    @ResponseBody
+    @GetMapping("/delete")
+    public Map<String, Object> deleteUser(@RequestParam Long userId) {
+        System.out.println("User ID: " + userId);
+        Map<String, Object> response = new HashMap<>();
+
+        TestUser oTestUser = new TestUser();
+        oTestUser.setUserId(userId);
+
+        oTestUser = testUserService.deleteTestUser(oTestUser);
+
+        // Add multiple messages to the response
+        response.put("messageCode", oTestUser.getMessageCode());
+        response.put("message", oTestUser.getMessage());
+
+        return response;
     }
 }

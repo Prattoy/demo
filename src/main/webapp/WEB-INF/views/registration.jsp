@@ -16,14 +16,14 @@
     <h2 class="text-center">User Registration</h2>
 
     <!-- Display the message if it exists -->
-    <c:if test="${not empty message}}">
-        <div class="alert alert-success show mt-3 message-div" role="alert">
-                ${message}
-            <button type="button" class="btn btn-danger btn-sm float-end close-button">
-                <span aria-hidden="true">X</span>
-            </button>
-        </div>
-    </c:if>
+    <%--    <c:if test="${not empty message}">--%>
+    <div class="alert alert-success show mt-3 message-div ${not empty message ? '': 'd-none'}" role="alert">
+        ${message}
+        <button type="button" class="btn btn-danger btn-sm float-end close-button">
+            <span aria-hidden="true">X</span>
+        </button>
+    </div>
+    <%--    </c:if>--%>
     <div class="card-body">
         <div class="card">
             <form action="/user/register" method="post" class="m-3">
@@ -55,13 +55,36 @@
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary mt-2">Register</button>
+                <button type="reset" class="btn btn-danger mt-2" id="resetButton">Reset</button>
+                <button type="submit" class="btn btn-primary mt-2" id="submitButton">Register</button>
             </form>
         </div>
     </div>
 </div>
-<!-- Add a container to display the list of users -->
-<div id="userListContainer" class="mt-3"></div>
+<div class="container mt-5">
+    <h2 class="text-center">Users List</h2>
+    <div class="card-body">
+        <div class="card">
+            <!-- Add a container to display the list of users -->
+            <div id="userListContainer" class="m-3">
+                <table class="table" id="userTable">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
 </body>
 
 
@@ -72,13 +95,58 @@
     <script>
         // Check if jQuery is defined
         if (typeof jQuery !== 'undefined') {
-            // jQuery is loaded, you can now use it
-            $(document).ready(function () {
-                // Closes the message
-                $('.close-button').click(function (e) {
-                    $('.message-div').hide()
-                })
+            function editUser(user) {
+                // console.log(user)
+                $("#userId").val(user.userId)
+                $("#userName").val(user.userName)
+                $("#email").val(user.email)
+                if (user.status == 'Y') {
+                    $("#active").prop('checked', true)
+                } else {
+                    $("#inactive").prop('checked', true)
+                }
+                // $("#status").val(user.status)
+                $("#phoneNo").val(user.phoneNo)
+                $("#submitButton").html("Update")
 
+                scrollTop();
+            }
+
+            function deleteUser(userId) {
+                var confirmation = confirm("Are you sure you want to delete this user?");
+
+                // console.log(userId)
+                if (confirmation) {
+                    $.ajax({
+                        type: "GET",
+                        url: "${pageContext.request.contextPath}/user/delete",
+                        data: {
+                            userId: userId
+                        },
+                        contentType: "application/json",
+                        success: function (data) {
+                            console.log(data)
+                            if (data.messageCode == 1) {
+                                $('.message-div').removeClass("alert-danger").removeClass("alert-success").removeClass("d-none").addClass("alert-success").html(data.message).show()
+                                getAllUsers()
+                            } else {
+                                $('.message-div').removeClass("alert-danger").removeClass("alert-success").removeClass("d-none").addClass("alert-danger").html(data.message).show()
+                            }
+                            scrollTop();
+                        },
+                        error: function (error) {
+                            console.error("Error deleting user: " + JSON.stringify(error));
+                        }
+                    });
+                }
+            }
+
+            function scrollTop() {
+                // Scroll to the top of the page
+                $('html, body').animate({scrollTop: 0}, 'slow');
+            }
+
+            function getAllUsers() {
                 // Fetch the list of users using AJAX
                 $.ajax({
                     type: "GET",
@@ -92,49 +160,56 @@
                         console.error("Error fetching user list: " + JSON.stringify(error));
                     }
                 });
+            }
 
-                function displayUserList(users) {
-                    var userListContainer = $("#userListContainer");
-                    userListContainer.empty();
+            function displayUserList(users) {
+                var userListContainer = $("#userListContainer");
 
-                    // Check if the users array is not empty
-                    if (users && users.length > 0) {
-                        // Create a table
-                        var table = $("<table class='table'>");
+                // Check if the users array is not empty
+                if (users && users.length > 0) {
 
-                        // Add table header
-                        var header = $("<thead><tr><th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Status</th><th>Actions</th></tr></thead>");
-                        table.append(header);
+                    let tableBody = $("#userTable tbody");
+                    tableBody.empty();
+                    // Iterate over each user and append to the table
+                    $.each(users, function (index, user) {
+                        var row = $("<tr>");
+                        row.append("<td>" + user.userId + "</td>");
+                        row.append("<td>" + user.userName + "</td>");
+                        row.append("<td>" + user.email + "</td>");
+                        row.append("<td>" + user.phoneNo + "</td>");
+                        let statusHtml = '';
+                        if(user.status == 'Y') {
+                            statusHtml = "<span class='btn-success'>Active</span>";
+                        } else {
+                            statusHtml = "<span class='btn-danger'>Inactive</span>";
+                        }
+                        row.append("<td>" + statusHtml + "</td>");
 
-                        // Create a table body
-                        var tbody = $("<tbody>");
+                        // Add edit and delete buttons
+                        var actions = $("<td><button class='btn btn-primary btn-sm' onclick='editUser(" + JSON.stringify(user) + ")'>Edit</button> " +
+                            "<button class='btn btn-danger btn-sm' onclick='deleteUser(" + user.userId + ")'>Delete</button></td>");
+                        row.append(actions);
 
-                        // Iterate over each user and append to the table
-                        $.each(users, function (index, user) {
-                            var row = $("<tr>");
-                            row.append("<td>" + user.userId + "</td>");
-                            row.append("<td>" + user.userName + "</td>");
-                            row.append("<td>" + user.email + "</td>");
-                            row.append("<td>" + user.phoneNo + "</td>");
-                            row.append("<td>" + user.status + "</td>");
+                        tableBody.append(row);
+                    });
 
-                            // Add edit and delete buttons
-                            var actions = $("<td><button class='btn btn-primary btn-sm' onclick='editUser(" + user.userId + ")'>Edit</button> " +
-                                "<button class='btn btn-danger btn-sm' onclick='deleteUser(" + user.userId + ")'>Delete</button></td>");
-                            row.append(actions);
-
-                            tbody.append(row);
-                        });
-
-                        // Append table body to the table
-                        table.append(tbody);
-
-                        // Append the table to the container
-                        userListContainer.append(table);
-                    } else {
-                        userListContainer.text("No users found.");
-                    }
+                } else {
+                    console.log("No users found.");
                 }
+            }
+
+            // jQuery is loaded, you can now use it
+            $(document).ready(function () {
+                // Closes the message
+                $('.close-button').click(function (e) {
+                    $('.message-div').hide()
+                })
+
+                getAllUsers();
+
+                $("#resetButton").click(function (e) {
+                    $("#submitButton").html("Register")
+                })
             });
         } else {
             // jQuery is not loaded

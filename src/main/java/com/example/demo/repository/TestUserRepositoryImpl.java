@@ -24,7 +24,7 @@ public class TestUserRepositoryImpl implements TestUserRepository{
         List<TestUser> list = new ArrayList<TestUser>();
         StringBuilder sBuilder = new StringBuilder();
         try {
-            sBuilder.append("SELECT * FROM BRTA_ARCH.TEST_USER");
+            sBuilder.append("SELECT * FROM BRTA_ARCH.TEST_USER ORDER BY INSERT_DATE DESC");
 
             MapSqlParameterSource paramSource = new MapSqlParameterSource();
 
@@ -88,7 +88,7 @@ public class TestUserRepositoryImpl implements TestUserRepository{
     public TestUser updateTestUser(TestUser testUser) {
         TestUser oTestUser = new TestUser();
         try {
-            SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("BRTA_ARCH").withProcedureName("TEST_USER_CUD");
+            SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("TEST_USER_CUD");
             Map<String, Object> inParamMap = new HashMap<String, Object>();
 
             inParamMap.put("P_ACTION_TYPE", "U");
@@ -114,7 +114,7 @@ public class TestUserRepositoryImpl implements TestUserRepository{
     public TestUser deleteTestUser(TestUser testUser) {
         TestUser oTestUser = new TestUser();
         try {
-            SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withCatalogName("BRTA_ARCH").withProcedureName("TEST_USER_CUD");
+            SimpleJdbcCall simpleJdbcCall = new SimpleJdbcCall(jdbcTemplate).withProcedureName("TEST_USER_CUD");
             Map<String, Object> inParamMap = new HashMap<String, Object>();
 
             inParamMap.put("P_ACTION_TYPE", "D");
