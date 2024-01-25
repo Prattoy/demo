@@ -87,7 +87,12 @@
 			<artifactId>commons-cli</artifactId>
 			<version>1.4</version> <!-- Use the version that suits your requirements -->
 		</dependency>
-
+		<!-- Start Jasper Report Unicode Version Supported Version Dependency-->
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>6.4.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>

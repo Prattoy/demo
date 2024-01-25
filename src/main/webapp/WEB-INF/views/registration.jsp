@@ -8,7 +8,8 @@
     <title>User Registration</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="icon" type="image/png" href="reg.png">
+    <!-- Add the link to your favicon -->
+    <link rel="icon" type="image/png" href="/images/reg.png">
 
 </head>
 <body>
