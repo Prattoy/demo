@@ -8,17 +8,18 @@
     <title>User Registration</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="icon" type="image/png" href="reg.png">
 
 </head>
 <body>
 
 <div class="container mt-5">
     <h2 class="text-center">User Registration</h2>
-
+<div></div>
     <!-- Display the message if it exists -->
     <%--    <c:if test="${not empty message}">--%>
-    <div class="alert alert-success show mt-3 message-div ${not empty message ? '': 'd-none'}" role="alert">
-        ${message}
+    <div class="alert ${not empty messageCode and messageCode == 99 ? 'alert-danger' : 'alert-success'} show mt-3 message-div ${not empty message ? '': 'd-none'}" role="alert">
+        ${not empty message ? message : ''}
         <button type="button" class="btn btn-danger btn-sm float-end close-button">
             <span aria-hidden="true">X</span>
         </button>
@@ -27,23 +28,23 @@
     <div class="card-body">
         <div class="card">
             <form action="/user/register" method="post" class="m-3">
-                <div class="form-group">
+                <div class="form-group mt-1">
                     <label for="userName">Name:</label>
                     <input type="text" class="form-control" id="userName" name="userName" required>
                 </div>
                 <input type="hidden" class="form-control" id="userId" name="userId">
 
-                <div class="form-group">
+                <div class="form-group mt-1">
                     <label for="email">Email:</label>
                     <input type="email" class="form-control" id="email" name="email" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mt-1">
                     <label for="phoneNo">Phone Number:</label>
-                    <input type="text" class="form-control" id="phoneNo" name="phoneNo" required>
+                    <input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1');" class="form-control" id="phoneNo" name="phoneNo" maxlength="11" required>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group mt-1">
                     <label>Status:</label>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" name="status" id="active" value="Y" checked>
@@ -143,7 +144,7 @@
 
             function scrollTop() {
                 // Scroll to the top of the page
-                $('html, body').animate({scrollTop: 0}, 'slow');
+                $('html, body').animate({scrollTop: 0}, 'fast');
             }
 
             function getAllUsers() {
@@ -209,6 +210,7 @@
 
                 $("#resetButton").click(function (e) {
                     $("#submitButton").html("Register")
+                    $("#userId").empty()
                 })
             });
         } else {

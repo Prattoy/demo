@@ -28,28 +28,6 @@ public class UserController {
         return "registration";
     }
 
-//    @PostMapping("/register")
-//    public String registerUser(
-//            @RequestParam("userName") String name,
-//            @RequestParam("email") String email,
-//            @RequestParam("phoneNo") String phn,
-//            @RequestParam("status") String status,
-//            Model model) {
-//
-//        // Perform registration logic here
-//        // For demonstration purposes, just print the data to the console
-//        System.out.println("Name: " + name);
-//        System.out.println("Email: " + email);
-//        System.out.println("Phone Number: " + phn);
-//        System.out.println("Status: " + status);
-//
-//        // Add a success message to the model
-//        model.addAttribute("message", "Registration successful!");
-//
-//        // You can redirect to a success page or show a confirmation message
-//        return "registration";
-//    }
-
     @PostMapping("/register")
     public ModelAndView saveUser(TestUser testUser, final RedirectAttributes redirectAttributes) throws IOException {
 
@@ -73,7 +51,6 @@ public class UserController {
             oTestUser = testUserService.createTestUser(testUser);
         }
 
-//        redirectAttributes.addFlashAttribute("documentLot", oDocumentLOT);
         redirectAttributes.addFlashAttribute("message", oTestUser.getMessage());
         redirectAttributes.addFlashAttribute("messageCode", oTestUser.getMessageCode());
 
